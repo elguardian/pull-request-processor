@@ -1,43 +1,53 @@
 package org.jboss.pull.processor;
 
-import org.jboss.pull.processor.processes.eap6.ProcessorEAP6;
-import org.jboss.pull.processor.processes.eap6.ProcessorMerge;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.ServiceLoader;
+
+import org.jboss.pull.processor.processes.Processor;
+import org.jboss.set.aphrodite.Aphrodite;
+import org.jboss.set.aphrodite.JsonStreamService;
+import org.jboss.set.aphrodite.spi.NotFoundException;
+import org.jboss.set.aphrodite.spi.StreamService;
 
 public class Main {
 
+	private Aphrodite aphrodite;
+	
+	public void start(String streamName) throws Exception {
+    	aphrodite = Aphrodite.instance();
+    	
+		StreamService streamService = getStreamService();
+
+    	ServiceLoader<Processor> processors = ServiceLoader.load(Processor.class);
+    	
+    	List<URL> urls = null;
+    	if(streamName == null) {
+    		urls = AphroditeUtil.findAllRepositories(streamService);
+    	} else {
+    		urls = AphroditeUtil.findAllRepositoriesInStream(streamService, streamName);
+    	}
+
+    	for(URL url : urls) {
+	    	for(Processor processor : processors) {
+	    		processor.init(aphrodite, streamService);
+	    		processor.process(url);
+	    	}
+    	}
+    	
+	}
+	
+	private StreamService getStreamService() throws NotFoundException {
+		JsonStreamService service = new JsonStreamService(aphrodite);
+		service.loadStreamData();
+		return service;
+	}
+	
     public static void main(String[] argv) throws Exception {
-
-        // Run merge processing
-        if (Boolean.getBoolean("merge")) {
-            if (argv.length == 2) {
-                try {
-                    ProcessorMerge processor = new ProcessorMerge(argv[0], argv[1]);
-                    processor.run();
-                    System.exit(0);
-                } catch (Exception e) {
-                    System.err.println(e);
-                    e.printStackTrace(System.err);
-                }
-            } else {
-                System.err.println(usageMerge());
-            }
-        }
-
-        // Run milestone processing
-        if (Boolean.getBoolean("processEAP6")) {
-            try {
-                ProcessorEAP6 processor = new ProcessorEAP6();
-                processor.run();
-                System.exit(0);
-            } catch (Exception e) {
-                System.err.println(e);
-                e.printStackTrace(System.err);
-            }
-        }
-
-        System.err.println(usage());
-        System.exit(1);
+    	new Main().start(argv[0]);
     }
+
 
     private static String usage() {
         StringBuilder usage = new StringBuilder();

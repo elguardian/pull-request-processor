@@ -8,7 +8,7 @@ import java.util.Arrays;
 import org.eclipse.egit.github.core.Milestone;
 import org.eclipse.egit.github.core.PullRequest;
 import org.eclipse.egit.github.core.PullRequestMarker;
-import org.jboss.pull.processor.processes.eap6.ProcessorEAP6;
+import org.jboss.pull.processor.processes.eap6.SETProcessor;
 import org.jboss.pull.shared.PullHelper;
 import org.jboss.pull.shared.Util;
 import org.jboss.pull.shared.connectors.RedhatPullRequest;
@@ -69,7 +69,7 @@ public class TestComplaints {
     public void testNoBug() throws Exception {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER, "", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -78,7 +78,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit.assertTrue(result.getDescription().toString(), result.getDescription().contains(Messages.MISSING_BUG));
@@ -89,7 +89,7 @@ public class TestComplaints {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER,
                 "https://bugzilla.redhat.com/show_bug.cgi?id=1", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -98,7 +98,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(String.valueOf(result.isMergeable()), result.isMergeable());
         AssertJUnit.assertFalse(result.getDescription().toString(), result.getDescription().contains(Messages.MISSING_BUG));
@@ -108,7 +108,7 @@ public class TestComplaints {
     public void testNoUpstream() throws Exception {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER, "", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -117,7 +117,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit.assertTrue(result.getDescription().toString(), result.getDescription().contains(Messages.MISSING_UPSTREAM));
@@ -128,7 +128,7 @@ public class TestComplaints {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER,
                 "https://github.com/uselessorg/jboss-eap/pull/3", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -137,7 +137,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit
@@ -148,7 +148,7 @@ public class TestComplaints {
     public void testHasUpstreamInternalRepoAbbreviated() throws Exception {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER, "#3", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -157,7 +157,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit
@@ -168,7 +168,7 @@ public class TestComplaints {
     public void testHasUpstreamExternalRepoAbbreviated() throws Exception {
         RedhatPullRequest pullRequest = setupPullRequest(String.format(DESCRIPTION_BUILDER, "wildfly/wildfly#3", ""));
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -177,7 +177,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit
@@ -190,7 +190,7 @@ public class TestComplaints {
 
         AssertJUnit.assertFalse(pullRequest.isUpstreamRequired());
 
-        ProcessorEAP6 complainer = new ProcessorEAP6();
+        SETProcessor complainer = new SETProcessor();
         PullHelper mockPullHelper = mock(PullHelper.class);
         when(mockPullHelper.getProperties()).thenReturn(
                 Util.loadProperties("src/test/resources/processor-eap-6.properties.example",
@@ -199,7 +199,7 @@ public class TestComplaints {
                 new ArrayList<Milestone>(Arrays.asList(new Milestone[] { new Milestone().setTitle("6.x").setState("Open") })));
         complainer.setHelper(mockPullHelper);
 
-        Result result = complainer.processPullRequest(pullRequest);
+        Result result = complainer.apply(pullRequest);
 
         AssertJUnit.assertFalse(result.isMergeable());
         AssertJUnit
