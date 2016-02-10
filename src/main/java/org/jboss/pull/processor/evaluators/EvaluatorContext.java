@@ -1,15 +1,16 @@
-package org.jboss.pull.processor.rules;
+package org.jboss.pull.processor.evaluators;
 
 import java.util.List;
 
 import org.jboss.set.aphrodite.Aphrodite;
 import org.jboss.set.aphrodite.domain.Issue;
 import org.jboss.set.aphrodite.domain.Patch;
+import org.jboss.set.aphrodite.domain.Repository;
 import org.jboss.set.aphrodite.spi.StreamService;
 
 
 
-public class RuleContext {
+public class EvaluatorContext {
 
 	private Aphrodite aphrodite;
 	
@@ -21,12 +22,15 @@ public class RuleContext {
 	
 	private List<Patch> related;
 	
-	public RuleContext(Aphrodite aphrodite, StreamService streamService, Patch patch, List<Issue> issues, List<Patch> related) {
+	private Repository repository;
+	
+	public EvaluatorContext(Aphrodite aphrodite, StreamService streamService, Repository repository, Patch patch, List<Issue> issues, List<Patch> related) {
 		this.aphrodite = aphrodite;
 		this.streamService = streamService;
 		this.patch = patch;
 		this.issues = issues;
 		this.related = related;
+		this.repository = repository;
 	}
 	
 	public Aphrodite getAphrodite() {
@@ -47,6 +51,10 @@ public class RuleContext {
 	
 	public List<Patch> getRelated() {
 		return related;
+	}
+
+	public Repository getRepository() {
+		return repository;
 	}
 	
 }

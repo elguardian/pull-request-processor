@@ -44,6 +44,11 @@
 			<artifactId>aphrodite</artifactId>
 			<version>0.2.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.20</version>
+		</dependency>
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.testng</groupId>

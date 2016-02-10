@@ -102,7 +102,7 @@ public class AphroditeUtil {
 		return relatedPullRequests;
 	}
 
-	public static Stream getStreamBy(StreamService streamService, Patch patch) throws NotFoundException{
+	public static List<Stream> getStreamBy(StreamService streamService, Patch patch) {
 		URL url = patch.getURL();
 		String []paths = url.getPath().split("/");
 		URL repo = null;
@@ -113,16 +113,38 @@ public class AphroditeUtil {
 		} 
 		
 		Codebase codebase = patch.getCodebase();
-		
+		List<Stream> streams = new ArrayList<>();
 		for(Stream stream : streamService.getStreams()) {
 			for(StreamComponent sc : stream.getAllComponents()) {
 				if(sc.getRepository().getURL().toString().equals(repo.toString()) && sc.getCodebase().equals(codebase)) {
-					return stream;
+					streams.add(stream);
 				}
 			}
 		}
 		
+		return streams;
+	}
+	
+	public static String getComponentNameBy(StreamService streamService, Patch patch) {
+		URL url = patch.getURL();
+		String []paths = url.getPath().split("/");
+		URL repo = null;
+		try {
+			repo = new URI("https://github.com/" + paths[1] + "/" +paths[2]).normalize().toURL();
+		} catch (MalformedURLException | URISyntaxException e) {
+			e.printStackTrace();
+		} 
 		
-		throw new NotFoundException("no stream found for repo " + repo + " -> " + codebase );
+		Codebase codebase = patch.getCodebase();
+		List<Stream> streams = new ArrayList<>();
+		for(Stream stream : streamService.getStreams()) {
+			for(StreamComponent sc : stream.getAllComponents()) {
+				if(sc.getRepository().getURL().toString().equals(repo.toString()) && sc.getCodebase().equals(codebase)) {
+					return sc.getName();
+				}
+			}
+		}
+		
+		return "Not found";
 	}
 }

@@ -1,6 +1,0 @@
-org.jboss.pull.processor.rules.flags.UpstreamRules
-org.jboss.pull.processor.rules.flags.StreamMatchRule
-org.jboss.pull.processor.rules.flags.QEFlagMatchRule
-org.jboss.pull.processor.rules.flags.PMFlagMatchRule
-org.jboss.pull.processor.rules.flags.DevFlagMatchRule
-org.jboss.pull.processor.rules.flags.AllFlagsFlagMatchRule

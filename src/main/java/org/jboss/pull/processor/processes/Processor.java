@@ -22,6 +22,7 @@
 package org.jboss.pull.processor.processes;
 
 import java.net.URL;
+import java.util.List;
 
 import org.jboss.set.aphrodite.Aphrodite;
 import org.jboss.set.aphrodite.spi.StreamService;
@@ -40,6 +41,6 @@ public interface Processor {
 
 	void init(Aphrodite aphrodite, StreamService streamService) throws Exception;
 	
-    void process(URL url) throws ProcessorExecutionException;
+	List<ProcessingResult> process(URL url) throws ProcessorExecutionException;
 
 }
